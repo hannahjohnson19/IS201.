@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Photo Mood Studio</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: Georgia, 'Times New Roman', serif;
+      background: linear-gradient(to bottom, #f5ede3, #e7d8c8);
+      color: #3d2d24;
+    }
+
+    .nav {
+      background-color: #6b4f3b;
+      padding: 18px;
+      text-align: center;
+    }
+
+    .nav a {
+      color: #fff8f0;
+      text-decoration: none;
+      margin: 0 16px;
+      font-family: Arial, Helvetica, sans-serif;
+      font-weight: bold;
+    }
+
+    .nav a:hover {
+      text-decoration: underline;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 50px auto;
+      background-color: #fffaf5;
+      border-radius: 18px;
+      padding: 35px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    }
+
+    h1 {
+      text-align: center;
+      margin-top: 0;
+      font-size: 2.8rem;
+      color: #7a4e2d;
+    }
+
+    .subtitle {
+      text-align: center;
+      font-family: Arial, Helvetica, sans-serif;
+      font-size: 1.05rem;
+      margin-bottom: 30px;
+    }
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      justify-content: center;
+      margin-bottom: 30px;
+    }
+
+    select, button {
+      padding: 12px 18px;
+      border-radius: 10px;
+      border: none;
+      font-size: 1rem;
+    }
+
+    select {
+      background-color: #f3e6d7;
+      color: #3d2d24;
+    }
+
+    button {
+      background-color: #7a4e2d;
+      color: white;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    button:hover {
+      background-color: #5e3c22;
+    }
+
+    .card {
+      background-color: #f9f3ec;
+      border-radius: 16px;
+      padding: 25px;
+      margin-top: 20px;
+      border-left: 8px solid #7a4e2d;
+    }
+
+    .card h2 {
+      margin-top: 0;
+      color: #7a4e2d;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .output-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+      margin-top: 20px;
+    }
+
+    .mini-box {
+      background: white;
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.07);
+    }
+
+    .mini-box h3 {
+      margin-top: 0;
+      font-size: 1rem;
+      color: #7a4e2d;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .tip {
+      margin-top: 20px;
+      background: #efe0cf;
+      padding: 14px;
+      border-radius: 10px;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 25px;
+      margin-top: 20px;
+      color: #5e4638;
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    @media (max-width: 700px) {
+      .output-grid {
+        grid-template-columns: 1fr;
+      }
+
+      h1 {
+        font-size: 2.1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="nav">
+    <a href="index.html">Back to Home Page</a>
+  </div>
+
+  <div class="container">
+    <h1>Photo Mood Studio</h1>
+    <p class="subtitle">
+      Generate a creative photography concept with mood, location, lighting, posing, and editing ideas.
+    </p>
+
+    <div class="controls">
+      <select id="moodSelect">
+        <option value="random">Random Mood</option>
+        <option value="warm">Warm & Cozy</option>
+        <option value="dreamy">Dreamy & Soft</option>
+        <option value="bold">Bold & Editorial</option>
+        <option value="romantic">Romantic</option>
+        <option value="nostalgic">Nostalgic</option>
+      </select>
+
+      <button onclick="generateConcept()">Generate Concept</button>
+    </div>
+
+    <div class="card">
+      <h2 id="conceptTitle">Your concept will appear here</h2>
+
+      <div class="output-grid">
+        <div class="mini-box">
+          <h3>Location</h3>
+          <p id="locationText">Choose a mood and click generate.</p>
+        </div>
+
+        <div class="mini-box">
+          <h3>Lighting</h3>
+          <p id="lightingText">Choose a mood and click generate.</p>
+        </div>
+
+        <div class="mini-box">
+          <h3>Pose / Action</h3>
+          <p id="poseText">Choose a mood and click generate.</p>
+        </div>
+
+        <div class="mini-box">
+          <h3>Editing Style</h3>
+          <p id="editingText">Choose a mood and click generate.</p>
+        </div>
+      </div>
+
+      <div class="tip">
+        <strong>Creative direction:</strong>
+        <span id="directionText">Your custom creative direction will appear here.</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="footer">
+    Created as a one-page AI-assisted web app
+  </div>
+
+  <script>
+    const data = {
+      warm: {
+        titles: [
+          "Golden Hour Story Session",
+          "Cozy Sunset Portrait Set",
+          "Soft Warm Lifestyle Shoot"
+        ],
+        locations: [
+          "a field with tall grass at sunset",
+          "a quiet neighborhood street in evening light",
+          "a neutral-toned room near a large window"
+        ],
+        lighting: [
+          "golden hour backlighting",
+          "soft window light with warm shadows",
+          "late afternoon sun with natural glow"
+        ],
+        poses: [
+          "looking away and laughing naturally",
+          "walking slowly while holding a jacket or bouquet",
+          "sitting casually and adjusting hair"
+        ],
+        editing: [
+          "warm highlights, creamy skin tones, soft contrast",
+          "slightly faded tones with a golden tint",
+          "rich warmth with natural skin and subtle grain"
+        ],
+        directions: [
+          "Focus on emotion and connection. Let the subject move naturally and avoid stiff posing.",
+          "Keep the photos relaxed and natural with lots of candid movement.",
+          "Use warmth and storytelling to make the session feel personal and timeless."
+        ]
+      },
+
+      dreamy: {
+        titles: [
+          "Dreamy Light Portrait Session",
+          "Soft Film-Inspired Shoot",
+          "Whimsical Pastel Portrait Concept"
+        ],
+        locations: [
+          "an open field with soft sky tones",
+          "a white bedroom with sheer curtains",
+          "a flower-filled garden or quiet path"
+        ],
+        lighting: [
+          "bright overcast light",
+          "diffused window light",
+          "soft morning light with low contrast"
+        ],
+        poses: [
+          "gentle movement while looking down",
+          "holding flowers close to the face",
+          "slow turns and soft expressions"
+        ],
+        editing: [
+          "light exposure, pastel colors, soft whites",
+          "film-inspired tones with lifted blacks",
+          "muted colors and airy highlights"
+        ],
+        directions: [
+          "Keep everything soft, delicate, and emotional.",
+          "Use gentle movement and subtle expressions for a light, feminine feel.",
+          "Aim for an airy editorial look with quiet emotion."
+        ]
+      },
+
+      bold: {
+        titles: [
+          "Editorial Street Portrait",
+          "High-Impact Fashion Concept",
+          "Bold Contrast City Shoot"
+        ],
+        locations: [
+          "a downtown wall with strong texture",
+          "a parking garage with clean lines",
+          "an urban sidewalk with dramatic shadows"
+        ],
+        lighting: [
+          "direct sunlight for strong contrast",
+          "flash photography with crisp shadows",
+          "late daylight with dramatic angles"
+        ],
+        poses: [
+          "strong eye contact with confident posture",
+          "walking directly toward the camera",
+          "sharp profile pose with structured body angles"
+        ],
+        editing: [
+          "high contrast with deep shadows",
+          "clean skin tones and sharp detail",
+          "editorial color grading with dramatic blacks"
+        ],
+        directions: [
+          "Make the subject feel powerful and fashion-forward.",
+          "Use structure, confidence, and stronger composition lines.",
+          "Treat the images more like a magazine spread than a casual portrait session."
+        ]
+      },
+
+      romantic: {
+        titles: [
+          "Romantic Portrait Session",
+          "Elegant Love Story Shoot",
+          "Soft and Feminine Photo Concept"
+        ],
+        locations: [
+          "a garden path with greenery",
+          "a neutral indoor space with soft textures",
+          "a field at sunset with flowing fabric"
+        ],
+        lighting: [
+          "soft golden hour light",
+          "diffused light with gentle highlights",
+          "window light with subtle shadow"
+        ],
+        poses: [
+          "holding flowers and looking softly past the camera",
+          "slow movement with dress or hair",
+          "gentle smile with relaxed shoulders"
+        ],
+        editing: [
+          "soft pink-beige tones with smooth highlights",
+          "light warmth with romantic softness",
+          "creamy neutrals and subtle glow"
+        ],
+        directions: [
+          "Lean into softness, elegance, and graceful posing.",
+          "Make the mood feel tender and timeless.",
+          "Focus on details like hands, fabric, and expression."
+        ]
+      },
+
+      nostalgic: {
+        titles: [
+          "Vintage Memory Session",
+          "Nostalgic Film Portrait Story",
+          "Old-Soul Lifestyle Shoot"
+        ],
+        locations: [
+          "an older home with character",
+          "a quiet road at sunset",
+          "a thrifted or vintage-inspired interior"
+        ],
+        lighting: [
+          "faded golden light",
+          "low-contrast natural light",
+          "soft evening shadows"
+        ],
+        poses: [
+          "looking out a window thoughtfully",
+          "walking slowly with a reflective expression",
+          "holding a small object like a book or camera"
+        ],
+        editing: [
+          "film grain, muted color, warm fade",
+          "slightly desaturated tones with texture",
+          "soft shadows with a vintage finish"
+        ],
+        directions: [
+          "Make it feel like a memory instead of a posed session.",
+          "Use emotion, stillness, and storytelling details.",
+          "Think timeless, reflective, and a little cinematic."
+        ]
+      }
+    };
+
+    function randomItem(arr) {
+      return arr[Math.floor(Math.random() * arr.length)];
+    }
+
+    function randomMoodKey() {
+      const keys = Object.keys(data);
+      return keys[Math.floor(Math.random() * keys.length)];
+    }
+
+    function generateConcept() {
+      let selectedMood = document.getElementById("moodSelect").value;
+
+      if (selectedMood === "random") {
+        selectedMood = randomMoodKey();
+      }
+
+      const moodData = data[selectedMood];
+
+      document.getElementById("conceptTitle").textContent = randomItem(moodData.titles);
+      document.getElementById("locationText").textContent = randomItem(moodData.locations);
+      document.getElementById("lightingText").textContent = randomItem(moodData.lighting);
+      document.getElementById("poseText").textContent = randomItem(moodData.poses);
+      document.getElementById("editingText").textContent = randomItem(moodData.editing);
+      document.getElementById("directionText").textContent = randomItem(moodData.directions);
+    }
+  </script>
+</body>
+</html>
